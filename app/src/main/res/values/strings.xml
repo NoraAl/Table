@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Table</string>
+    <string name="file_name">file name</string>
+    <string name="file_description">file_description</string>
+</resources>
