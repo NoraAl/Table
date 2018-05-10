@@ -13,7 +13,7 @@ class FileAdapter(private val files: FileModel) : RecyclerView.Adapter<FileAdapt
         val fileNameView: TextView
 
         init {
-            // Define click listener for the ViewHolder's View.
+            // Define click listener for the RowHolder's View.
             v.setOnClickListener{
                 Log.d(TAG, "Element $adapterPosition clicked.")
             }

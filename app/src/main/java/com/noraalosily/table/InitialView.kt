@@ -13,13 +13,11 @@ class InitialView : AppCompatActivity() {
         setContentView(R.layout.initial_view)
 
         newButton.setOnClickListener {
-            Log.e("setOnClickListener","-----------")
             val intent = Intent(this, TableView::class.java)
             this.startActivity(intent)
         }
 
         openButton.setOnClickListener {
-            Log.e("setOnClickListener","new------")
             val intent = Intent(this, FileView::class.java)
             this.startActivity(intent)
         }

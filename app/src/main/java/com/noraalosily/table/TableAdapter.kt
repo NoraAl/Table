@@ -5,51 +5,77 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Adapter
+import android.widget.ImageButton
 import android.widget.TextView
 
 
 
-class TableAdapter(private val table: TableModel) : RecyclerView.Adapter<TableAdapter.ViewHolder>() {
-
-    class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        val xCell: TextView
-        val yCell: TextView
-
-        init {
-            // Define click listener for the ViewHolder's View.
-            v.setOnClickListener{
-                Log.d(TAG, "Element $adapterPosition clicked.")
-            }
-            xCell = v.findViewById(R.id.xCell) as TextView
-            yCell = v.findViewById(R.id.yCell) as TextView
-
-        }
+class TableAdapter(private val table: TableModel) : RecyclerView.Adapter<RowHolder>(), RowHolder.TableListener {
+    override fun deleteCell(position: Int) {
+        Log.e(TAG, "deleting $position")
     }
 
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        // Create a new view.
-        val v = LayoutInflater.from(viewGroup.context)
+
+
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): RowHolder {
+        val row = LayoutInflater.from(viewGroup.context)
                 .inflate(R.layout.table_item, viewGroup, false)
-
-        Log.d(TAG, "onCreateViewHolder")
-        return ViewHolder(v)
+        return RowHolder(row,this)
     }
 
-    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        Log.d(TAG, "Element $position set.")
-
-        // Get element from your dataset at this position and replace the contents of the view
-        // with that element
-        viewHolder.xCell.text = table.getX(position)
-        viewHolder.yCell.text = table.getY(position)
+    override fun onBindViewHolder(rowHolder: RowHolder, position: Int) {
+        rowHolder.xCell.text = table.getX(position)
+        rowHolder.yCell.text = table.getY(position)
     }
+
     override fun getItemCount(): Int {
-        Log.d(TAG, "getItemCount")
+        Log.e(TAG, "getItemCount")
         return table.size()
     }
 
     companion object {
-        private const val TAG = "TableAdapter"
+         private const val TAG = "TableAdapter"
+    }
+
+
+}
+
+
+class RowHolder(row: View, ad:TableAdapter) : RecyclerView.ViewHolder(row) {
+    var listener: TableListener? = null
+    interface TableListener {
+        fun deleteCell(position: Int)
+    }
+
+    companion object {
+        private const val TAG = "RowHolder"
+    }
+
+    val xCell: TextView = row.findViewById(R.id.xCell) as TextView
+    val yCell: TextView = row.findViewById(R.id.yCell) as TextView
+    private val deleteCell: ImageButton = row.findViewById(R.id.deleteButton) as ImageButton
+
+    init {
+        listener = ad
+        xCell.setOnClickListener{
+            Log.e(TAG, "X--- $adapterPosition clicked.")
+        }
+
+        yCell.setOnClickListener{
+            Log.e(TAG, "Y--- $adapterPosition clicked.")
+        }
+
+        deleteCell.setOnClickListener{
+            Log.e(TAG, "delete---- $adapterPosition clicked.")
+            listener?.deleteCell(adapterPosition)
+
+        }
+
+        row.setOnClickListener{
+            Log.e(TAG, "Element---- $adapterPosition clicked.")
+        }
+
     }
 }
