@@ -1,22 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp"
     android:gravity="center"
     tools:context=".TableView"
     android:orientation="vertical">
+
+
+
+    <!--Top bar-->
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/rowLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:fontFamily="@font/comfortaa"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="20dp"
+            android:text="File"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tableNameView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:fontFamily="@font/comfortaa"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="20dp"
+            android:textColor="@color/cardview_light_background"
+            android:textSize="16sp" />
+
+        <!--<FrameLayout-->
+            <!--android:layout_width="200dp"-->
+            <!--android:layout_height="wrap_content">-->
+           <!---->
+            <!--<EditText-->
+                <!--android:id="@+id/tableNameEditable"-->
+                <!--android:visibility="gone"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:fontFamily="@font/comfortaa"-->
+                <!--android:gravity="center"-->
+                <!--android:paddingLeft="10dp"-->
+                <!--android:paddingRight="20dp"-->
+                <!--android:textColor="@color/cardview_light_background"-->
+                <!--android:textSize="18sp" />-->
+        <!--</FrameLayout>-->
+
+        <!--filler view to align the label to the right of LinearLayout-->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+
+
+        <ImageButton
+            android:id="@+id/deleteButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/home_drawable"
+             />
+
+    </LinearLayout>
+
+    <!--end-->
+
+
+    <!--recycler fragment container -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.7"
         android:id="@+id/tablePortFragment"
         android:orientation="horizontal">
-
     </FrameLayout>
+    <!--end  -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

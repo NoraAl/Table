@@ -1,5 +1,6 @@
 package com.noraalosily.table
 
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,11 +8,21 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
 
-
+/*******************************
+ *
+ *
+ *
+ * TableAdapter
+ *
+ *
+ *
+ *******************************/
 class TableAdapter(private val table: TableModel, tableRecyclerFragment: TableRecyclerFragment?) : RecyclerView.Adapter<RowHolder>(), RowHolder.RowHolderListener {
     //implements model modification RowHolder.RowHolderListener: deleteCell, editX, editY
     //interface for the recyclerview to access scrollToTop
@@ -62,6 +73,14 @@ class TableAdapter(private val table: TableModel, tableRecyclerFragment: TableRe
         return table.size()
     }
 
+    fun changeTableName(name: String){
+        table.setName(name)
+    }
+
+//    fun clearFocus(){
+//        this.p
+//    }
+
 
     companion object {
         private const val TAG = "TableAdapter"
@@ -71,6 +90,16 @@ class TableAdapter(private val table: TableModel, tableRecyclerFragment: TableRe
 }
 
 
+/*******************************
+*
+*
+*
+* RowHolder
+*
+*
+*
+ *******************************/
+
 class RowHolder(row: View, tableAdapter: TableAdapter) : RecyclerView.ViewHolder(row) {
 
     companion object {
@@ -78,6 +107,7 @@ class RowHolder(row: View, tableAdapter: TableAdapter) : RecyclerView.ViewHolder
     }
 
     private var listener: RowHolderListener? = null
+    private var imm: InputMethodManager
 
     interface RowHolderListener {
         fun deleteCell(position: Int)
@@ -88,13 +118,14 @@ class RowHolder(row: View, tableAdapter: TableAdapter) : RecyclerView.ViewHolder
 
     val xCell: EditText = row.findViewById(R.id.xCell) as EditText
     val yCell: EditText = row.findViewById(R.id.yCell) as EditText
+    val colorButton: Button = row.findViewById(R.id.colorButton) as Button
     private val deleteCell: ImageButton = row.findViewById(R.id.deleteButton) as ImageButton
     private val layout: LinearLayout = row.findViewById(R.id.rowLayout) as LinearLayout
     private var currentPosition = 0
 
     init {
         listener = tableAdapter
-
+        imm  = layout.context.getSystemService(Context.INPUT_METHOD_SERVICE)as InputMethodManager
 
         xCell.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
             if (adapterPosition<0) return@OnFocusChangeListener// called after deleting this position:out of boundary error
@@ -111,27 +142,40 @@ class RowHolder(row: View, tableAdapter: TableAdapter) : RecyclerView.ViewHolder
 
             if (!hasFocus) {
                 val y = (view as EditText).text.toString()
+                Log.e(TAG, "x $adapterPosition should be saved.")
                 listener?.editY(adapterPosition, y.toDouble())
             }
         }
 
-        deleteCell.setOnClickListener {
+        colorButton.setOnClickListener{
+            Log.e(TAG, "color $adapterPosition clear.")
+            it.requestFocus()
+        }
 
+        deleteCell.setOnClickListener {
             Log.e(TAG, "delete---- $adapterPosition clicked.")
+//            yCell.clearFocus()
+//            yCell.isCursorVisible = false
+
+            xCell.clearFocus()
+            xCell.isCursorVisible = false
+
             listener?.deleteCell(adapterPosition)
 
         }
 
-//        deleteCell.setOnTouchListener(View.OnTouchListener { view, motionEvent ->
-//            if (motionEvent.action == MotionEvent.ACTION_UP){
-//                Log.e(TAG, "delete---- $adapterPosition clicked UP.")
-//                listener?.deleteCell(adapterPosition)
-//                return@OnTouchListener true
-//            }
-//            Log.e(TAG, "delete---- $adapterPosition clicked??")
-//            return@OnTouchListener false
-//        })
+        layout.setOnClickListener{
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
+            yCell.clearFocus()
+            yCell.isCursorVisible = false
+            xCell.clearFocus()
+            xCell.isCursorVisible = false
+            it.requestFocus()
+        }
 
+    }
 
+    fun click(){
+        layout.callOnClick()
     }
 }

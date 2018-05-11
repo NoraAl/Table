@@ -7,25 +7,19 @@ data class Point(var x:Double, var  y: Double)
 class TableModel {
 
     private var table: ArrayList<Point> = ArrayList()
+    private lateinit var name: String
     constructor(){
+        val timeFileCreatedInMillis = System.currentTimeMillis()
+        name = "table_"+timeFileCreatedInMillis.toString()
         var temp = Point(0.0,0.0)
         for (i in 0..20){
             temp = Point(i.toDouble(), i.toDouble())
             table.add(temp)
         }
     }
-    constructor(values: ArrayList<Point>){}
+    constructor(values: ArrayList<Point>, name: String){}
 
-    fun print(){
-        var str = ""
-        //for (point in table) println("${point.x},${point.y}")
-        for (point in table) str += "${point.x},${point.y}\t"
-        Log.e("TableModel", str)
-    }
 
-    fun print(i: Int){
-        Log.e("Table", "${table[i].x},${table[i].y}")
-    }
 
     fun getX(index: Int):String = table[index].x.toString()
     fun getY(index: Int):String = table[index].y.toString()
@@ -39,6 +33,25 @@ class TableModel {
     fun delete(i : Int){table.removeAt(i)}
 
     fun size():Int = table.size
+
+    fun getName(): String = name
+    fun setName(name: String) {this.name = name}
+
+
+
+    ///print
+    fun print(){
+        var str = ""
+        //for (point in table) println("${point.x},${point.y}")
+        for (point in table) str += "${point.x},${point.y}\t"
+
+        Log.e("TableModel---", name)
+        Log.e("TableModel---", str)
+    }
+
+    fun print(i: Int){
+        Log.e("Table", "${table[i].x},${table[i].y}")
+    }
 
 
 }
