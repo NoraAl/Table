@@ -46,6 +46,25 @@ class TableRecyclerFragment : Fragment(), TableAdapter.AdapterListener {
 
     fun getTableName():String =  table.getName()
 
+    fun newValue(){
+        val adapter = (tableAdapter as TableAdapter)
+
+//        //first get current from focused EditText
+//        if (adapter.xIsTheLastModified)
+//            table.setX(adapter.currentPosition, adapter.currentX )
+//        else
+//            table.setY(adapter.currentPosition, adapter.currentY)
+
+
+        val position = table.add()
+
+        adapter.notifyDataSetChanged()
+        table.print()
+
+        viewManager.scrollToPosition(position)
+
+    }
+
     override fun scrollToTop(position: Int) {
         val firstPosition = viewManager.findFirstVisibleItemPosition()
         val firstItemView = viewManager.findViewByPosition(firstPosition)

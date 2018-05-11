@@ -12,7 +12,8 @@ class TableModel {
         val timeFileCreatedInMillis = System.currentTimeMillis()
         name = "table_"+timeFileCreatedInMillis.toString()
         var temp = Point(0.0,0.0)
-        for (i in 0..20){
+        for (i in 0 until
+                1){
             temp = Point(i.toDouble(), i.toDouble())
             table.add(temp)
         }
@@ -37,13 +38,18 @@ class TableModel {
     fun getName(): String = name
     fun setName(name: String) {this.name = name}
 
+    fun add():Int{
+        table.add(Point(0.0,0.0))
+        return table.lastIndex
+    }
+
 
 
     ///print
     fun print(){
         var str = ""
         //for (point in table) println("${point.x},${point.y}")
-        for (point in table) str += "${point.x},${point.y}\t"
+        for (point in table) str += "${point.x},${point.y}––––"
 
         Log.e("TableModel---", name)
         Log.e("TableModel---", str)

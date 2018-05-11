@@ -24,6 +24,7 @@ class TableView : AppCompatActivity() {
     }
     private var recyclerFragment: Fragment? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.table_view)
@@ -37,22 +38,17 @@ class TableView : AppCompatActivity() {
                     .commit()
         }
 
-        tableNameView.text = (recyclerFragment as TableRecyclerFragment).getTableName()
+        val rf = recyclerFragment as TableRecyclerFragment//pointer
+
+        tableNameView.text = rf.getTableName()
 
         newValueButton.setOnClickListener{
-            Log.e(TAG,"newValueButton")
-
-            val f = TableKeyboardFragment()
-            val fragmentManager = fragmentManager
-            val fragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.add(R.id.tablePortFragment, f)
-            fragmentTransaction.commit()
-
+            rf.newValue()
         }
 
         tableNameView.setOnClickListener{
             val dialogIntent = Intent(this, EditTextDialog::class.java)
-            val name = (recyclerFragment as TableRecyclerFragment).getTableName()
+            val name = rf.getTableName()
             dialogIntent.putExtra(TAG,name)
             startActivityForResult(dialogIntent,CODE)
         }
