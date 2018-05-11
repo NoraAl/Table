@@ -19,9 +19,9 @@ import android.widget.LinearLayout
 
 
 
-class TableFragment : Fragment(), TableAdapter.AdapterListener {
+class TableRecyclerFragment : Fragment(), TableAdapter.AdapterListener {
     companion object {
-        private const val TAG = "TableFragment"
+        private const val TAG = "TableRecyclerFragment"
     }
 
     private var recyclerView: RecyclerView? = null

@@ -3,7 +3,6 @@ package com.noraalosily.table
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.noraalosily.table.R.id.newValueButton
 import kotlinx.android.synthetic.main.table_view.*
 
 class TableView : AppCompatActivity() {
@@ -19,7 +18,7 @@ class TableView : AppCompatActivity() {
         var recyclerFragment = fragmentManager.findFragmentById(R.id.tablePortFragment)
 
         if (recyclerFragment == null) {
-            recyclerFragment = TableFragment()
+            recyclerFragment = TableRecyclerFragment()
             fragmentManager.beginTransaction()
                     .add(R.id.tablePortFragment, recyclerFragment)
                     .commit()

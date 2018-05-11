@@ -17,7 +17,14 @@ class TableModel {
     constructor(values: ArrayList<Point>){}
 
     fun print(){
-        for (point in table) println("${point.x},${point.y}")
+        var str = ""
+        //for (point in table) println("${point.x},${point.y}")
+        for (point in table) str += "${point.x},${point.y}\t"
+        Log.e("TableModel", str)
+    }
+
+    fun print(i: Int){
+        Log.e("Table", "${table[i].x},${table[i].y}")
     }
 
     fun getX(index: Int):String = table[index].x.toString()

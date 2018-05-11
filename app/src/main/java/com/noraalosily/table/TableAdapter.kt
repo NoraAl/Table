@@ -3,6 +3,7 @@ package com.noraalosily.table
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
@@ -11,32 +12,38 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 
 
-class TableAdapter(private val table: TableModel, tableFragment: TableFragment?) : RecyclerView.Adapter<RowHolder>(), RowHolder.RowHolderListener {
+class TableAdapter(private val table: TableModel, tableRecyclerFragment: TableRecyclerFragment?) : RecyclerView.Adapter<RowHolder>(), RowHolder.RowHolderListener {
+    //implements model modification RowHolder.RowHolderListener: deleteCell, editX, editY
+    //interface for the recyclerview to access scrollToTop
     interface AdapterListener {
         fun scrollToTop(position: Int)
     }
 
-    var listener: AdapterListener? = null
-
+    private var listener: AdapterListener? = null
     init {
-        listener = tableFragment
+        listener = tableRecyclerFragment
     }
 
 
     // Adapter Listener calls
     override fun editX(position: Int, value:Double) {
         table.setX(position,value)
-        table.print()
+        table.print(position)
     }
 
-    override fun editY(position: Int) {
-        listener?.scrollToTop(position)
+    override fun editY(position: Int, value: Double) {
+
+        table.setY(position,value)
+        table.print(position)
+       // listener?.scrollToTop(position)
     }
 
     // Row Listener implementation
     override fun deleteCell(position: Int) {
+
         Log.e(TAG, "deleting $position")
         table.delete(position)
+        table.print()
         notifyItemRemoved(position)
     }
 
@@ -52,7 +59,6 @@ class TableAdapter(private val table: TableModel, tableFragment: TableFragment?)
     }
 
     override fun getItemCount(): Int {
-        Log.e(TAG, "getItemCount")
         return table.size()
     }
 
@@ -76,7 +82,7 @@ class RowHolder(row: View, tableAdapter: TableAdapter) : RecyclerView.ViewHolder
     interface RowHolderListener {
         fun deleteCell(position: Int)
         fun editX(position: Int, value: Double)
-        fun editY(position: Int)
+        fun editY(position: Int, value: Double)
     }
 
 
@@ -88,31 +94,43 @@ class RowHolder(row: View, tableAdapter: TableAdapter) : RecyclerView.ViewHolder
 
     init {
         listener = tableAdapter
-        layout.setOnClickListener {
-            //            it.setBackgroundColor(Color.parseColor("#c0c0c0"))
-            currentPosition = adapterPosition
-        }
-        xCell.setOnClickListener {
-            Log.e(TAG, "X--- $adapterPosition clicked.")
-            //listener?.editX(adapterPosition)
+
+
+        xCell.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
+            if (adapterPosition<0) return@OnFocusChangeListener// called after deleting this position:out of boundary error
+
+            if (!hasFocus) {
+                val x = (view as EditText).text.toString()
+                Log.e(TAG, "x $adapterPosition should be saved.")
+                listener?.editX(adapterPosition, x.toDouble())
+            }
         }
 
-        yCell.setOnClickListener {
-            listener?.editY(adapterPosition)
+        yCell.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
+            if (adapterPosition<0) return@OnFocusChangeListener // called after deleting this position:out of boundary error
+
+            if (!hasFocus) {
+                val y = (view as EditText).text.toString()
+                listener?.editY(adapterPosition, y.toDouble())
+            }
         }
 
         deleteCell.setOnClickListener {
+
             Log.e(TAG, "delete---- $adapterPosition clicked.")
             listener?.deleteCell(adapterPosition)
 
         }
 
-        xCell.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
-            if (!hasFocus) {
-                val x = (view as EditText).text.toString()
-                listener?.editX(adapterPosition, x.toDouble())
-            }
-        }
+//        deleteCell.setOnTouchListener(View.OnTouchListener { view, motionEvent ->
+//            if (motionEvent.action == MotionEvent.ACTION_UP){
+//                Log.e(TAG, "delete---- $adapterPosition clicked UP.")
+//                listener?.deleteCell(adapterPosition)
+//                return@OnTouchListener true
+//            }
+//            Log.e(TAG, "delete---- $adapterPosition clicked??")
+//            return@OnTouchListener false
+//        })
 
 
     }
