@@ -11,6 +11,10 @@ import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
+import android.widget.Button
+import android.widget.LinearLayout
+
+
 
 
 
@@ -20,21 +24,10 @@ class TableFragment : Fragment(), TableAdapter.AdapterListener {
         private const val TAG = "TableFragment"
     }
 
-
     private var recyclerView: RecyclerView? = null
     private lateinit var  viewManager:LinearLayoutManager
     private lateinit var tableAdapter: RecyclerView.Adapter<*>
     private lateinit var tables: TableModel
-    private var topPosition = 0
-
-    override fun scrollToTop(position: Int) {
-        val firstPosition = viewManager.findFirstVisibleItemPosition()
-        val firstItemView = viewManager.findViewByPosition(firstPosition)
-        val offset = firstItemView.top
-
-        viewManager?.scrollToPositionWithOffset(position, offset)
-        tableAdapter.notifyDataSetChanged()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,12 +47,18 @@ class TableFragment : Fragment(), TableAdapter.AdapterListener {
         recyclerView?.layoutManager = viewManager
         recyclerView?.adapter = tableAdapter
 
-        recyclerView?.viewTreeObserver?.addOnGlobalLayoutListener {
-            topPosition = viewManager.findFirstVisibleItemPosition()
-        }
-
 
 
         return fragmentView
+    }
+
+    override fun scrollToTop(position: Int) {
+        val firstPosition = viewManager.findFirstVisibleItemPosition()
+        val firstItemView = viewManager.findViewByPosition(firstPosition)
+        val offset = firstItemView.top
+
+        viewManager.scrollToPositionWithOffset(position, offset)
+        tableAdapter.notifyDataSetChanged()
+
     }
 }

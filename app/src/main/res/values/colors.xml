@@ -6,5 +6,6 @@
     <color name="colorOrange">#F08015</color>
     <color name="colorGray">#bdc0c6</color>
     <color name="colorDarkGray">#6B778A</color>
+    <color name="ccolorAlphaGray">#cc6B778A</color>
     <color name="background_material_light">#fafafa</color>
 </resources>

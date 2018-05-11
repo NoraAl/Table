@@ -9,14 +9,14 @@
     android:gravity="center"
     tools:context=".TableView"
     android:orientation="vertical">
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.7"
         android:id="@+id/tablePortFragment"
         android:orientation="horizontal">
 
-    </LinearLayout>
+    </FrameLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,14 +25,14 @@
 
         >
         <ImageButton
-            android:id="@+id/newValueButton"
+            android:id="@+id/plotButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="16dp"
             android:background="@drawable/plot_drawable"
             />
         <ImageButton
-            android:id="@+id/plotButton"
+            android:id="@+id/newValueButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="16dp"
