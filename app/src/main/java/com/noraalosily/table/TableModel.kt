@@ -1,5 +1,7 @@
 package com.noraalosily.table
 
+import android.util.Log
+
 data class Point(var x:Double, var  y: Double)
 
 class TableModel {
@@ -13,6 +15,10 @@ class TableModel {
         }
     }
     constructor(values: ArrayList<Point>){}
+
+    fun print(){
+        for (point in table) println("${point.x},${point.y}")
+    }
 
     fun getX(index: Int):String = table[index].x.toString()
     fun getY(index: Int):String = table[index].y.toString()

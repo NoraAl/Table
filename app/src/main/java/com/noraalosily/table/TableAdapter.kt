@@ -4,17 +4,18 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
-import android.widget.TextView
-
 
 
 class TableAdapter(private val table: TableModel, tableFragment: TableFragment?) : RecyclerView.Adapter<RowHolder>(), RowHolder.RowHolderListener {
-    interface AdapterListener{
+    interface AdapterListener {
         fun scrollToTop(position: Int)
     }
+
     var listener: AdapterListener? = null
 
     init {
@@ -23,8 +24,9 @@ class TableAdapter(private val table: TableModel, tableFragment: TableFragment?)
 
 
     // Adapter Listener calls
-    override fun editX(position: Int) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun editX(position: Int, value:Double) {
+        table.setX(position,value)
+        table.print()
     }
 
     override fun editY(position: Int) {
@@ -41,12 +43,12 @@ class TableAdapter(private val table: TableModel, tableFragment: TableFragment?)
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): RowHolder {
         val row = LayoutInflater.from(viewGroup.context)
                 .inflate(R.layout.table_item, viewGroup, false)
-        return RowHolder(row,this)
+        return RowHolder(row, this)
     }
 
     override fun onBindViewHolder(rowHolder: RowHolder, position: Int) {
-        rowHolder.xCell.text = table.getX(position)
-        rowHolder.yCell.text = table.getY(position)
+        rowHolder.xCell.setText( table.getX(position))
+        rowHolder.yCell.setText( table.getY(position))
     }
 
     override fun getItemCount(): Int {
@@ -55,56 +57,62 @@ class TableAdapter(private val table: TableModel, tableFragment: TableFragment?)
     }
 
 
-
     companion object {
-         private const val TAG = "TableAdapter"
+        private const val TAG = "TableAdapter"
     }
 
 
 }
 
 
-class RowHolder(row: View, tableAdapter:TableAdapter) : RecyclerView.ViewHolder(row) {
+class RowHolder(row: View, tableAdapter: TableAdapter) : RecyclerView.ViewHolder(row) {
 
     companion object {
         private const val TAG = "RowHolder"
     }
 
-    var listener: RowHolderListener? = null
+    private var listener: RowHolderListener? = null
+
     interface RowHolderListener {
         fun deleteCell(position: Int)
-        fun editX(position: Int)
+        fun editX(position: Int, value: Double)
         fun editY(position: Int)
     }
 
 
-    val xCell: TextView = row.findViewById(R.id.xCell) as TextView
-    val yCell: TextView = row.findViewById(R.id.yCell) as TextView
+    val xCell: EditText = row.findViewById(R.id.xCell) as EditText
+    val yCell: EditText = row.findViewById(R.id.yCell) as EditText
     private val deleteCell: ImageButton = row.findViewById(R.id.deleteButton) as ImageButton
     private val layout: LinearLayout = row.findViewById(R.id.rowLayout) as LinearLayout
     private var currentPosition = 0
 
     init {
         listener = tableAdapter
-        layout.setOnClickListener{
-//            it.setBackgroundColor(Color.parseColor("#c0c0c0"))
+        layout.setOnClickListener {
+            //            it.setBackgroundColor(Color.parseColor("#c0c0c0"))
             currentPosition = adapterPosition
         }
-        xCell.setOnClickListener{
+        xCell.setOnClickListener {
             Log.e(TAG, "X--- $adapterPosition clicked.")
-            listener?.editX(adapterPosition)
+            //listener?.editX(adapterPosition)
         }
 
-        yCell.setOnClickListener{
+        yCell.setOnClickListener {
             listener?.editY(adapterPosition)
         }
 
-        deleteCell.setOnClickListener{
+        deleteCell.setOnClickListener {
             Log.e(TAG, "delete---- $adapterPosition clicked.")
             listener?.deleteCell(adapterPosition)
 
         }
 
+        xCell.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
+            if (!hasFocus) {
+                val x = (view as EditText).text.toString()
+                listener?.editX(adapterPosition, x.toDouble())
+            }
+        }
 
 
     }
