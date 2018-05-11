@@ -5,19 +5,38 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Adapter
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 
 
 
-class TableAdapter(private val table: TableModel) : RecyclerView.Adapter<RowHolder>(), RowHolder.TableListener {
-    override fun deleteCell(position: Int) {
-        Log.e(TAG, "deleting $position")
+class TableAdapter(private val table: TableModel, tableFragment: TableFragment?) : RecyclerView.Adapter<RowHolder>(), RowHolder.RowHolderListener {
+    interface AdapterListener{
+        fun scrollToTop(position: Int)
+    }
+    var listener: AdapterListener? = null
+
+    init {
+        listener = tableFragment
     }
 
 
+    // Adapter Listener calls
+    override fun editX(position: Int) {
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
+    override fun editY(position: Int) {
+        listener?.scrollToTop(position)
+    }
+
+    // Row Listener implementation
+    override fun deleteCell(position: Int) {
+        Log.e(TAG, "deleting $position")
+        table.delete(position)
+        notifyItemRemoved(position)
+    }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): RowHolder {
         val row = LayoutInflater.from(viewGroup.context)
@@ -35,6 +54,8 @@ class TableAdapter(private val table: TableModel) : RecyclerView.Adapter<RowHold
         return table.size()
     }
 
+
+
     companion object {
          private const val TAG = "TableAdapter"
     }
@@ -43,28 +64,39 @@ class TableAdapter(private val table: TableModel) : RecyclerView.Adapter<RowHold
 }
 
 
-class RowHolder(row: View, ad:TableAdapter) : RecyclerView.ViewHolder(row) {
-    var listener: TableListener? = null
-    interface TableListener {
-        fun deleteCell(position: Int)
-    }
+class RowHolder(row: View, tableAdapter:TableAdapter) : RecyclerView.ViewHolder(row) {
 
     companion object {
         private const val TAG = "RowHolder"
     }
 
+    var listener: RowHolderListener? = null
+    interface RowHolderListener {
+        fun deleteCell(position: Int)
+        fun editX(position: Int)
+        fun editY(position: Int)
+    }
+
+
     val xCell: TextView = row.findViewById(R.id.xCell) as TextView
     val yCell: TextView = row.findViewById(R.id.yCell) as TextView
     private val deleteCell: ImageButton = row.findViewById(R.id.deleteButton) as ImageButton
+    private val layout: LinearLayout = row.findViewById(R.id.rowLayout) as LinearLayout
+    private var currentPosition = 0
 
     init {
-        listener = ad
+        listener = tableAdapter
+        layout.setOnClickListener{
+//            it.setBackgroundColor(Color.parseColor("#c0c0c0"))
+            currentPosition = adapterPosition
+        }
         xCell.setOnClickListener{
             Log.e(TAG, "X--- $adapterPosition clicked.")
+            listener?.editX(adapterPosition)
         }
 
         yCell.setOnClickListener{
-            Log.e(TAG, "Y--- $adapterPosition clicked.")
+            listener?.editY(adapterPosition)
         }
 
         deleteCell.setOnClickListener{
@@ -73,9 +105,7 @@ class RowHolder(row: View, ad:TableAdapter) : RecyclerView.ViewHolder(row) {
 
         }
 
-        row.setOnClickListener{
-            Log.e(TAG, "Element---- $adapterPosition clicked.")
-        }
+
 
     }
 }
