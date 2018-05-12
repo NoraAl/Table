@@ -39,9 +39,7 @@ class TableView : AppCompatActivity() {
         }
 
         val rf = recyclerFragment as TableRecyclerFragment//pointer
-
         tableNameView.text = rf.getTableName()
-
         newValueButton.setOnClickListener{
             rf.newValue()
         }
@@ -52,6 +50,12 @@ class TableView : AppCompatActivity() {
             dialogIntent.putExtra(TAG,name)
             startActivityForResult(dialogIntent,CODE)
         }
+
+        homeButton.setOnClickListener{
+            returnToHome()
+        }
+
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -64,5 +68,15 @@ class TableView : AppCompatActivity() {
             tableNameView.text = (recyclerFragment as TableRecyclerFragment).getTableName()// in case name is empty
 
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        returnToHome()
+    }
+
+    private fun returnToHome(){
+        finish()
+        Log.e(TAG,"finishing")
     }
 }

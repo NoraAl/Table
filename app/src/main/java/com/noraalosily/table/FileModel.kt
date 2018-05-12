@@ -1,19 +1,30 @@
 package com.noraalosily.table
 
-data class FilePreview(var fileName:String, var  fileDescription: String)
+import java.io.Serializable
 
-class FileModel {
+data class FileMeta(var filename:String, var  date: String, var time: String):Serializable
 
-    private var files: ArrayList<FilePreview> = ArrayList()
+class FileModel:Serializable {
+
+    private var files: ArrayList<FileMeta> = ArrayList()
 
     init {
+        val f = FileMeta("dd","dd","dd")
 
-        files.add(FilePreview("file a", "some description"))
-        files.add(FilePreview("file b", "some description"))
+        files.add(f)
+        files.add(f)
     }
 
-    fun get(index: Int):String = files[index].fileName
+    fun get(index: Int):String = files[index].filename
     fun size():Int = files.size
+
+    fun getFilename(index: Int) = files[index].filename
+    fun getDate(index: Int) = files[index].date
+    fun getTime(index: Int) = files[index].time
+
+    fun setFilename(index: Int, name: String ){ files[index].filename = name}
+    fun setDate(index: Int, date: String ){ files[index].date = date}
+    fun setTime(index: Int, time: String ){ files[index].time = time}
 
 
 }

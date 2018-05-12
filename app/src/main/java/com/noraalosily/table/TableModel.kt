@@ -1,16 +1,27 @@
 package com.noraalosily.table
 
 import android.util.Log
+import java.io.Serializable
+import java.text.DateFormat
+import java.util.*
 
-data class Point(var x:Double, var  y: Double)
+data class Point(var x:Double, var  y: Double):Serializable
 
 class TableModel {
-
     private var table: ArrayList<Point> = ArrayList()
-    private lateinit var name: String
+    private lateinit var meta: FileMeta
+
     constructor(){
-        val timeFileCreatedInMillis = System.currentTimeMillis()
-        name = "table_"+timeFileCreatedInMillis.toString()
+        val timesMillis = System.currentTimeMillis()
+        val date = DateFormat.getDateInstance().format(Date(timesMillis))
+        val time = DateFormat.getTimeInstance().format(Date(timesMillis))
+
+        val name = "table $date $time"
+
+        meta = FileMeta(name,date,time)
+
+
+
         var temp = Point(0.0,0.0)
         for (i in 0 until
                 1){
@@ -35,29 +46,37 @@ class TableModel {
 
     fun size():Int = table.size
 
-    fun getName(): String = name
-    fun setName(name: String) {this.name = name}
+    fun getName(): String = meta.filename
+    fun setName(name: String) {this.meta.filename = name}
+
+    fun getMeta():FileMeta = meta
+    fun setMeta(meta: FileMeta) {this.meta = meta}
 
     fun add():Int{
         table.add(Point(0.0,0.0))
         return table.lastIndex
     }
 
+    fun save(){
+
+    }
 
 
-    ///print
+
+    // print access
     fun print(){
         var str = ""
         //for (point in table) println("${point.x},${point.y}")
         for (point in table) str += "${point.x},${point.y}––––"
 
-        Log.e("TableModel---", name)
+        Log.e("TableModel---", meta.filename)
         Log.e("TableModel---", str)
     }
 
     fun print(i: Int){
         Log.e("Table", "${table[i].x},${table[i].y}")
     }
+
 
 
 }

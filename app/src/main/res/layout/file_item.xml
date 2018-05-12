@@ -25,15 +25,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:fontFamily="@font/comfortaa_light"
+                    android:fontFamily="@font/comfortaa"
                     android:text="@string/file_name"
-                    android:textColor="#000"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/dateView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/comfortaa_light"
+                    android:paddingBottom="10dp"
+                    android:text="@string/file_description"
+                    android:textColor="#555" />
+                <TextView
+                    android:id="@+id/timeView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/comfortaa_light"
+                    android:paddingBottom="10dp"
                     android:text="@string/file_description"
                     android:textColor="#555" />
             </LinearLayout>
