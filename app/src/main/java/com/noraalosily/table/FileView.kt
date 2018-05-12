@@ -1,14 +1,14 @@
 package com.noraalosily.table
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import java.io.File
-import java.io.ObjectInputStream
+import android.util.Log
 
 
-class FileView() : AppCompatActivity() {
+class FileView : AppCompatActivity() , FileAdapter.FileAdapterInterface{
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
@@ -21,7 +21,7 @@ class FileView() : AppCompatActivity() {
         files = intent.getSerializableExtra(InitialView.TAG) as FileModel
 
         viewManager = LinearLayoutManager(this)
-        viewAdapter = FileAdapter(files)
+        viewAdapter = FileAdapter(files, this)
 
         recyclerView = findViewById<RecyclerView>(R.id.filesRecyclerView).apply {
             // use this setting to improve performance if you know that changes
@@ -36,5 +36,23 @@ class FileView() : AppCompatActivity() {
 
         }
 
+    }
+
+    /*****************************************
+    *
+    * FileAdapterInterface implementation
+    *
+    *****************************************/
+    override fun openFile(position: Int) {
+        val openFileIntent = Intent()
+
+        openFileIntent.putExtra(InitialView.FILE_RESULT, position)
+        setResult(InitialView.FILE_CODE, openFileIntent)
+        finish()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        Log.e("File", "dsj")
     }
 }

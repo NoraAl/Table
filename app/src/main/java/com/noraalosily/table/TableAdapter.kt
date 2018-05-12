@@ -1,18 +1,13 @@
 package com.noraalosily.table
 
-import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
-import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.text.Editable
 import android.text.TextWatcher
 
@@ -27,11 +22,7 @@ import android.text.TextWatcher
  *
  *
  *******************************/
-class TableAdapter(private val table: TableModel, tableRecyclerFragment: TableRecyclerFragment?) : RecyclerView.Adapter<RowHolder>(), RowHolder.RowHolderListener {
-
-
-    //implements model modification RowHolder.RowHolderListener: deleteCell, editX, editY
-    //interface for the recyclerview to access scrollToTop
+class TableAdapter(private val table: TableModel, tableRecyclerFragment: TableRecyclerFragment?) : RecyclerView.Adapter<RowHolder>(), RowHolder.RowHolderInterface {
     interface AdapterListener {
         fun scrollToTop(position: Int)
     }
@@ -45,7 +36,6 @@ class TableAdapter(private val table: TableModel, tableRecyclerFragment: TableRe
     init {
         listener = tableRecyclerFragment
     }
-
 
     // Adapter Listener calls
     override fun editX(position: Int, value:Double) {
@@ -108,9 +98,6 @@ class TableAdapter(private val table: TableModel, tableRecyclerFragment: TableRe
     }
 
 
-
-
-
     companion object {
         private const val TAG = "TableAdapter"
     }
@@ -135,9 +122,7 @@ class RowHolder(row: View, tableAdapter: TableAdapter) : RecyclerView.ViewHolder
         private const val TAG = "RowHolder"
     }
 
-
-
-    interface RowHolderListener {
+    interface RowHolderInterface {
         fun deleteCell(position: Int)
         fun setPosition(position: Int)
         fun currentX(x: Double)
@@ -147,17 +132,14 @@ class RowHolder(row: View, tableAdapter: TableAdapter) : RecyclerView.ViewHolder
         fun xIsTheLasModified(flag:Boolean)
     }
 
-
     val xCell: EditText = row.findViewById(R.id.xCell) as EditText
     val yCell: EditText = row.findViewById(R.id.yCell) as EditText
     val colorButton: Button = row.findViewById(R.id.colorButton) as Button
     private val deleteCell: ImageButton = row.findViewById(R.id.deleteButton) as ImageButton
-    private val layout: LinearLayout = row.findViewById(R.id.rowLayout) as LinearLayout
-    private var listener: RowHolderListener? = null
+    private var listener: RowHolderInterface? = null
 
     init {
         listener = tableAdapter
-
         xCell.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
 
@@ -181,7 +163,6 @@ class RowHolder(row: View, tableAdapter: TableAdapter) : RecyclerView.ViewHolder
             }
 
         })
-
 
         xCell.setOnTouchListener(View.OnTouchListener { v, _ ->
             v.isFocusable = true
@@ -208,8 +189,6 @@ class RowHolder(row: View, tableAdapter: TableAdapter) : RecyclerView.ViewHolder
             xCell.isCursorVisible = false
             listener?.deleteCell(adapterPosition)
             listener?.setPosition(adapterPosition)
-
-
         }
     }
 }

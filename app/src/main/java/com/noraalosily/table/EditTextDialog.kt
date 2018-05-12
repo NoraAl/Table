@@ -31,8 +31,8 @@ class EditTextDialog : Activity() {
 
     private fun finish(newname: String) {
         val nameIntent = Intent()
-        nameIntent.putExtra(TableView.RESULT, newname)
-        setResult(TableView.CODE, nameIntent)
+        nameIntent.putExtra(TableView.DIALOG_RESULT, newname)
+        setResult(TableView.DIALOG_CODE, nameIntent)
         finish()
 
     }

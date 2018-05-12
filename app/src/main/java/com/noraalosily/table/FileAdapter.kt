@@ -7,49 +7,75 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 
-class FileAdapter(private val files: FileModel) : RecyclerView.Adapter<FileAdapter.ViewHolder>() {
-
-    class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        val nameView: TextView
-        val dateView: TextView
-        val timeView: TextView
-
-        init {
-            // Define click listener for the RowHolder's View.
-            v.setOnClickListener{
-                Log.d(TAG, "Element $adapterPosition clicked.")
-            }
-            nameView = v.findViewById(R.id.filenameTextView) as TextView
-            dateView = v.findViewById(R.id.dateView) as TextView
-            timeView = v.findViewById(R.id.timeView) as TextView
-        }
+class FileAdapter(private val files: FileModel, fileView: FileView?) : RecyclerView.Adapter<ViewHolder>(), ViewHolder.ViewHolderInterface {
+    interface FileAdapterInterface {
+        fun openFile(position: Int)
     }
 
+    private var listener: FileAdapterInterface? = null
+    init {
+        listener = fileView
+    }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view.
         val v = LayoutInflater.from(viewGroup.context)
                 .inflate(R.layout.file_item, viewGroup, false)
-
-        Log.d(TAG, "onCreateViewHolder")
-        return ViewHolder(v)
+        return ViewHolder(v, this)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        Log.d(TAG, "Element $position set.")
-
-        // Get element from your dataset at this position and replace the contents of the view
-        // with that element
         viewHolder.nameView.text = files.getFilename(position)
         viewHolder.dateView.text = files.getDate(position)
         viewHolder.timeView.text = files.getTime(position)
     }
-    override fun getItemCount(): Int {
-        Log.d(TAG, "getItemCount")
-        return files.size()
+
+    override fun getItemCount(): Int = files.size()
+
+    /*****************************************
+     *
+     * ViewHolderInterface implementation
+     *
+     *****************************************/
+    override fun openFile(position: Int) {
+        listener?.openFile(position)
     }
 
     companion object {
         private const val TAG = "TableAdapter"
+    }
+}
+
+
+
+
+/*******************************
+ *
+ *
+ *
+ * ViwHolder
+ *
+ *
+ *
+ *******************************/
+
+class ViewHolder(v: View, adapter: FileAdapter) : RecyclerView.ViewHolder(v) {
+    interface ViewHolderInterface {
+        fun openFile(position: Int)
+    }
+    private var listener: ViewHolderInterface? = null
+    val nameView: TextView
+    val dateView: TextView
+    val timeView: TextView
+
+    init {
+        listener = adapter
+
+        v.setOnClickListener {
+            listener?.openFile(adapterPosition)
+        }
+        nameView = v.findViewById(R.id.filenameTextView) as TextView
+        dateView = v.findViewById(R.id.dateView) as TextView
+        timeView = v.findViewById(R.id.timeView) as TextView
     }
 }

@@ -6,9 +6,11 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
+import java.io.*
 
 
 class TableRecyclerFragment() : Fragment(), TableAdapter.AdapterListener {
@@ -17,19 +19,30 @@ class TableRecyclerFragment() : Fragment(), TableAdapter.AdapterListener {
     }
 
     private var recyclerView: RecyclerView? = null
-    private var tableAdapter: RecyclerView.Adapter<*>
+    private var tableAdapter: RecyclerView.Adapter<*>? = null
     private var table = TableModel()
-    private lateinit var  viewManager: LinearLayoutManager
+    private lateinit var viewManager: LinearLayoutManager
 
-    init {
-        tableAdapter = TableAdapter(table, this)
-        //table.setContext(TableView.)
-    }
+//    init {
+//        tableAdapter = TableAdapter(table, this)
+//
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewManager = LinearLayoutManager(context)
+
     }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        val id = arguments.getString(TableView.TABLE_ID)
+        Log.e(TAG, "-------------------------------  $id")
+        if (!id.isEmpty())
+            table = openTable(id)
+        tableAdapter = TableAdapter(table, this)
+    }
+
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val fragmentView =  inflater?.inflate(R.layout.table_recycler_view, container, false)
@@ -51,21 +64,28 @@ class TableRecyclerFragment() : Fragment(), TableAdapter.AdapterListener {
 
     fun newValue(){
         val adapter = (tableAdapter as TableAdapter)
-
-//        //first get current from focused EditText
-//        if (adapter.xIsTheLastModified)
-//            table.setX(adapter.currentPosition, adapter.currentX )
-//        else
-//            table.setY(adapter.currentPosition, adapter.currentY)
-
-
         val position = table.add()
-
         adapter.notifyDataSetChanged()
         table.print()
-
         viewManager.scrollToPosition(position)
+    }
 
+    private fun openTable(filename: String):TableModel{
+        var obj: TableModel? = null
+
+        val file = File(context.filesDir, filename)
+        if (!file.exists())
+            return TableModel()
+
+        FileInputStream(file).use {
+            ObjectInputStream(it).apply {
+                obj = readObject() as TableModel
+                close()
+            }
+            it.close()
+        }
+
+        return obj?: TableModel()
     }
 
     override fun scrollToTop(position: Int) {
@@ -74,7 +94,7 @@ class TableRecyclerFragment() : Fragment(), TableAdapter.AdapterListener {
         val offset = firstItemView.top
 
         viewManager.scrollToPositionWithOffset(position, offset)
-        tableAdapter.notifyDataSetChanged()
+        tableAdapter?.notifyDataSetChanged()
 
     }
 }

@@ -18,9 +18,10 @@ class TableModel: Serializable {
         val date = DateFormat.getDateInstance().format(Date(timesMillis))
         val time = DateFormat.getTimeInstance().format(Date(timesMillis))
 
+        val id = "table $timesMillis"
         val name = "table $date $time"
 
-        meta = FileMeta(name,date,time)
+        meta = FileMeta(name,date,time, id)
 
 
 
@@ -51,7 +52,8 @@ class TableModel: Serializable {
     fun size():Int = table.size
 
     fun getName(): String = meta.filename
-    fun setName(name: String) {this.meta.filename = name}
+    fun setName(name: String) {meta.filename = name}
+    fun getId(): String = meta.id
 
     fun getMeta():FileMeta = meta
     fun setMeta(meta: FileMeta) {this.meta = meta}
@@ -61,23 +63,23 @@ class TableModel: Serializable {
         return table.lastIndex
     }
 
-    fun save(){
-
-        var obj: FileModel? = null
-        val file = File(context?.filesDir, InitialView.TABLE_FILES_NAME)
-        if (!file.exists())
-            Log.e("SSSSS","sssss")
-
-
-        FileOutputStream(meta.filename).use {
-            ObjectOutputStream(it).apply {
-
-                writeObject(this)
-                close()
-            }
-            it.close()
-        }
-    }
+//    fun save(){
+//
+//        var obj: FileModel? = null
+//        val file = File(context?.filesDir, InitialView.TABLE_FILES_NAME)
+//        if (!file.exists())
+//            Log.e("SSSSS","sssss")
+//
+//
+//        FileOutputStream(meta.filename).use {
+//            ObjectOutputStream(it).apply {
+//
+//                writeObject(this)
+//                close()
+//            }
+//            it.close()
+//        }
+//    }
 
 
 

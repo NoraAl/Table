@@ -5,23 +5,17 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.view.View.*
-import android.view.Window
-import android.widget.EditText
 import kotlinx.android.synthetic.main.table_view.*
-import android.R.attr.data
 import android.content.Context
-import java.io.File
 import java.io.ObjectOutputStream
 
 
 class TableView : AppCompatActivity() {
-
     companion object {
         const val TAG = "TableView"
-        const val RESULT = "RESULT"
-        const val CODE = 0
+        const val DIALOG_RESULT = "TABLE_RESULT"
+        const val TABLE_ID = "TABLE_ID"//used to open a file
+        const val DIALOG_CODE = 0
     }
     private var recyclerFragment: Fragment? = null
 
@@ -31,9 +25,15 @@ class TableView : AppCompatActivity() {
         setContentView(R.layout.table_view)
         supportActionBar?.hide()// hide the title bar
 
+        val fileId = intent.getSerializableExtra(InitialView.TABLE_ID_I) as String
+
         recyclerFragment = fragmentManager.findFragmentById(R.id.tablePortFragment)
         if (recyclerFragment == null) {
             recyclerFragment = TableRecyclerFragment()
+            val bundle = Bundle()
+            bundle.putString(TABLE_ID, fileId)
+
+            (recyclerFragment as TableRecyclerFragment).arguments = bundle
 
             fragmentManager.beginTransaction()
                     .add(R.id.tablePortFragment, recyclerFragment)
@@ -42,6 +42,7 @@ class TableView : AppCompatActivity() {
 
         val rf = recyclerFragment as TableRecyclerFragment//pointer
         tableNameView.text = rf.getTableName()
+
         newValueButton.setOnClickListener{
             rf.newValue()
         }
@@ -50,7 +51,7 @@ class TableView : AppCompatActivity() {
             val dialogIntent = Intent(this, EditTextDialog::class.java)
             val name = rf.getTableName()
             dialogIntent.putExtra(TAG,name)
-            startActivityForResult(dialogIntent,CODE)
+            startActivityForResult(dialogIntent,DIALOG_CODE)
         }
 
         homeButton.setOnClickListener{
@@ -63,8 +64,8 @@ class TableView : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == CODE) {
-            val newname = data?.getStringExtra(RESULT)?: ""
+        if (requestCode == DIALOG_CODE) {
+            val newname = data?.getStringExtra(DIALOG_RESULT)?: ""
             // change in both model and view
             (recyclerFragment as TableRecyclerFragment).changeTableName(newname)
             tableNameView.text = (recyclerFragment as TableRecyclerFragment).getTableName()// in case name is empty
@@ -73,7 +74,6 @@ class TableView : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
         returnToHome()
     }
 
@@ -82,21 +82,21 @@ class TableView : AppCompatActivity() {
         val table = (recyclerFragment as TableRecyclerFragment).getTable()
 
         // save file
-
-        val fileOutputStream = openFileOutput(table.getName(), Context.MODE_PRIVATE)
+//        val path = getFileStreamPath(table.getId())
+//        Log.e(TAG,"in table view $path")
+        val fileOutputStream = openFileOutput(table.getId(), Context.MODE_PRIVATE)
         ObjectOutputStream(fileOutputStream).apply {
-
             writeObject(table)
             close()
         }
 
         fileOutputStream.close()
-        //Log.e
+        Log.e(TAG, "file saved")
 
         // send meta for files
-        metaIntent.putExtra(InitialView.RESULT, table.getMeta())
-        setResult(InitialView.CODE, metaIntent)
+        metaIntent.putExtra(InitialView.TABLE_RESULT, table.getMeta())
+        setResult(InitialView.TABLE_CODE, metaIntent)
         finish()
-        Log.e(TAG,"finishing")
+        //Log.e(TAG,"finishing")
     }
 }
