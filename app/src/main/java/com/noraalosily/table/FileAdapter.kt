@@ -40,7 +40,9 @@ class FileAdapter(private val files: FileModel) : RecyclerView.Adapter<FileAdapt
 
         // Get element from your dataset at this position and replace the contents of the view
         // with that element
-        viewHolder.nameView.text = files.get(position)
+        viewHolder.nameView.text = files.getFilename(position)
+        viewHolder.dateView.text = files.getDate(position)
+        viewHolder.timeView.text = files.getTime(position)
     }
     override fun getItemCount(): Int {
         Log.d(TAG, "getItemCount")

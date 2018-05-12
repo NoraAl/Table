@@ -2,6 +2,7 @@ package com.noraalosily.table
 
 
 import android.app.Fragment
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -10,7 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 
 
-class TableRecyclerFragment : Fragment(), TableAdapter.AdapterListener {
+class TableRecyclerFragment() : Fragment(), TableAdapter.AdapterListener {
     companion object {
         private const val TAG = "TableRecyclerFragment"
     }
@@ -22,6 +23,7 @@ class TableRecyclerFragment : Fragment(), TableAdapter.AdapterListener {
 
     init {
         tableAdapter = TableAdapter(table, this)
+        //table.setContext(TableView.)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +47,7 @@ class TableRecyclerFragment : Fragment(), TableAdapter.AdapterListener {
     }
 
     fun getTableName():String =  table.getName()
+    fun getTable():TableModel  = table
 
     fun newValue(){
         val adapter = (tableAdapter as TableAdapter)

@@ -1,15 +1,17 @@
 package com.noraalosily.table
 
+import android.content.Context
 import android.util.Log
-import java.io.Serializable
+import java.io.*
 import java.text.DateFormat
 import java.util.*
 
 data class Point(var x:Double, var  y: Double):Serializable
 
-class TableModel {
+class TableModel: Serializable {
     private var table: ArrayList<Point> = ArrayList()
     private lateinit var meta: FileMeta
+    private var context: Context? = null
 
     constructor(){
         val timesMillis = System.currentTimeMillis()
@@ -30,6 +32,8 @@ class TableModel {
         }
     }
     constructor(values: ArrayList<Point>, name: String){}
+
+    fun setContext(context: Context){this.context = context}
 
 
 
@@ -59,6 +63,20 @@ class TableModel {
 
     fun save(){
 
+        var obj: FileModel? = null
+        val file = File(context?.filesDir, InitialView.TABLE_FILES_NAME)
+        if (!file.exists())
+            Log.e("SSSSS","sssss")
+
+
+        FileOutputStream(meta.filename).use {
+            ObjectOutputStream(it).apply {
+
+                writeObject(this)
+                close()
+            }
+            it.close()
+        }
     }
 
 
