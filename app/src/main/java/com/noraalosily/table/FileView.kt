@@ -52,7 +52,7 @@ class FileView : AppCompatActivity() , FileAdapter.FileAdapterInterface{
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        Log.e("File", "dsj")
+        openFile(-1)
+        finish()
     }
 }

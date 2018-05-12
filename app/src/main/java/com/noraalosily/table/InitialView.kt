@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
+import android.widget.Toast
 import kotlinx.android.synthetic.main.initial_view.*
 import java.io.File
 import java.io.ObjectInputStream
@@ -39,7 +41,14 @@ class InitialView : AppCompatActivity() {
         openButton.setOnClickListener {
             files = loadFiles()
             if (files.isEmpty()){
-                newTableActivity("")
+                val handler = Handler()
+                handler.postDelayed({
+                    newTableActivity("")
+                }, 1000)
+                Toast.makeText(applicationContext, "No files exist, opening new one",
+                        Toast.LENGTH_SHORT).show();
+
+
             } else {
                 val intent = Intent(this, FileView::class.java)
                 intent.putExtra(TAG,files)
@@ -50,7 +59,6 @@ class InitialView : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.e(TAG, "receiving")
 
         if (requestCode == TABLE_CODE) {
             val meta = data?.getSerializableExtra(TABLE_RESULT) as FileMeta
@@ -62,8 +70,7 @@ class InitialView : AppCompatActivity() {
                 files.resetFile(i,meta)
             }
 
-
-            //save
+            //save file metas
             val fileOutputStream = openFileOutput(TABLE_FILES_NAME, Context.MODE_PRIVATE)
             ObjectOutputStream(fileOutputStream).apply {
 
@@ -75,13 +82,14 @@ class InitialView : AppCompatActivity() {
             return
         }
         if (requestCode == FILE_CODE){
-            val position = data?.getIntExtra(FILE_RESULT,0)?: 0
+            val position = data?.getIntExtra(FILE_RESULT,-1)?: -1
+            if (position<0)
+                return
             newTableActivity(files.getId(position))
-            println()
         }
     }
 
-    fun newTableActivity(filename: String){
+    fun newTableActivity(filename: String, noFiles:Boolean = false){
         val intent = Intent(this, TableView::class.java)
         intent.putExtra(TABLE_ID_I,filename)
         startActivityForResult(intent,TABLE_CODE)
